@@ -3,6 +3,7 @@
 
 # Alembic
 alembic
+alembic.ini
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
