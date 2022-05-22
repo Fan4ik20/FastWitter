@@ -1,9 +1,14 @@
 from fastapi import FastAPI
+import uvicorn
 
-app = FastAPI()
+import config
+
+from routers import users
 
 
-@app.get('/')
-def hellp():
-    return {'message': 'Hello'}
+app = FastAPI(docs_url='/api/v1/docs/')
+app.include_router(users.router, prefix='/api/v1')
 
+
+if __name__ == '__main__':
+    uvicorn.run(app, host='0.0.0.0', port=65432)
