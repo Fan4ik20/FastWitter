@@ -1,14 +1,13 @@
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
-from fast_witter.database.settings import blog_engine
 
 BlogBase = declarative_base()
 
 
-subscribers = Table(
-    'subscribers', BlogBase.metadata,
-    Column("first_user_id", Integer, ForeignKey('users.id'), primary_key=True),
-    Column("second_user_id", Integer, ForeignKey('users.id'), primary_key=True)
+followers = Table(
+    'followers', BlogBase.metadata,
+    Column("follower_id", Integer, ForeignKey('users.id'), primary_key=True),
+    Column("followed_id", Integer, ForeignKey('users.id'), primary_key=True)
 )
 
 likes = Table(
@@ -24,13 +23,16 @@ class User(BlogBase):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(30), nullable=False)
     email = Column(String(30), nullable=False)
-    hashed_password = Column(String(30), nullable=False)
+    hashed_password = Column(String, nullable=False)
 
     name = Column(String(20))
     surname = Column(String(30))
 
-    subscribers = relationship(
-        'User', secondary=subscribers, backref='subscribed'
+    followed = relationship(
+        'User', secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref='followers'
     )
 
 
