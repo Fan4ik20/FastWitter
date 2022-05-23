@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 import schemas
-from dependencies import get_db
+from dependencies import get_db, PaginationQueryParams
 from database.interfaces import UserInterface
 
 router = APIRouter(
@@ -11,10 +11,15 @@ router = APIRouter(
 
 
 @router.get('/', response_model=list[schemas.User])
-def get_users(db: Session = Depends(get_db)):
+def get_users(
+        pagination_params: PaginationQueryParams = Depends(),
+        db: Session = Depends(get_db)
+):
     """Retrieves a list of all users"""
 
-    return UserInterface.get_users(db)
+    return UserInterface.get_users(
+        db, pagination_params.offset, pagination_params.limit
+    )
 
 
 @router.post(
