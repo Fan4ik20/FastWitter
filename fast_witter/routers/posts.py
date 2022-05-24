@@ -1,11 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, status, Response
 
 from sqlalchemy.orm import Session
 
 import schemas
+import errors
 
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import PostInterface
+
 
 router = APIRouter(prefix='/posts', tags=['posts'])
 
@@ -24,8 +26,7 @@ def get_posts(
 def get_post(post_id: int, db: Session = Depends(get_db)):
     post = PostInterface.get_post(db, post_id)
 
-    if post is None:
-        raise HTTPException(404, detail='Post with given id does not exist')
+    errors.raise_not_found_if_none(post, 'Post')
 
     return post
 
@@ -35,5 +36,8 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
     response_class=Response
 )
 def delete_post(post_id: int, db: Session = Depends(get_db)):
-    if PostInterface.delete_post(db, post_id) is None:
-        raise HTTPException(404, detail='Post with given id does not exist')
+    post = PostInterface.get_post(db, post_id)
+
+    errors.raise_not_found_if_none(post, 'Post')
+
+    PostInterface.delete_post(db, post)

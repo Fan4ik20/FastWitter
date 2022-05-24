@@ -2,6 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 import schemas
+import errors
+
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import UserInterface
 
@@ -17,7 +19,7 @@ def get_users(
 ):
     """Retrieves a list of all users"""
 
-    return UserInterface.get_users(
+    return UserInterface.get_all_users(
         db, pagination_params.offset, pagination_params.limit
     )
 
@@ -36,7 +38,6 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user = UserInterface.get_user(db, user_id)
 
-    if user is None:
-        raise HTTPException(404, detail='User Not Found')
+    errors.raise_not_found_if_none(user, 'User')
 
     return user

@@ -1,10 +1,11 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, Depends, status
 
 from sqlalchemy.orm import Session
 
+import errors
 import schemas
 from dependencies import get_db, PaginationQueryParams
-from database.interfaces import PostInterface
+from database.interfaces import PostInterface, UserInterface
 
 router = APIRouter(prefix='/users/{user_id}/posts', tags=['users_posts'])
 
@@ -23,7 +24,9 @@ def get_users_posts(
 def create_post(
         user_id: int, post: schemas.PostCreate, db: Session = Depends(get_db)
 ):
-    # TODO. Check if user exists
+    user = UserInterface.get_user(db, user_id)
+
+    errors.raise_not_found_if_none(user, 'User')
 
     return PostInterface.create_post(db, post, user_id)
 
@@ -35,9 +38,9 @@ def create_post(
 def get_user_post(user_id: int, post_id: int, db: Session = Depends(get_db)):
     post = PostInterface.get_user_post(db, user_id, post_id)
 
-    if post is None:
-        raise HTTPException(
-            404, detail='Post with given post_id and user_id does not exist'
-        )
+    errors.raise_not_found_if_none(
+        post, 'Post',
+        message='Post with given post_id and user_id does not exist'
+    )
 
     return post
