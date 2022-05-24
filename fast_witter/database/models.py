@@ -22,7 +22,7 @@ class User(BlogBase):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(30), nullable=False)
-    email = Column(String(30), nullable=False)
+    email = Column(String(50), nullable=False)
     hashed_password = Column(String, nullable=False)
 
     name = Column(String(20))
@@ -40,7 +40,8 @@ class Post(BlogBase):
     __tablename__ = 'posts'
 
     id = Column(Integer, primary_key=True)
-    title = Column(String(10), nullable=False)
+
+    title = Column(String(30), nullable=False)
     content = Column(String, nullable=False)
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
@@ -53,7 +54,7 @@ class Comment(BlogBase):
     __tablename__ = 'comments'
 
     id = Column(Integer, primary_key=True)
-    content = Column(String(30), nullable=False)
+    content = Column(String(100), nullable=False)
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     post_id = Column(Integer, ForeignKey('posts.id'), nullable=False)
