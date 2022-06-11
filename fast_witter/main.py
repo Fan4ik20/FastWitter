@@ -5,19 +5,28 @@ import uvicorn
 import config
 
 from routers import users
-from routers import posts
-from routers import users_posts
-from routers import comments
+
+from routers.posts import user_posts
+from routers.posts import posts
+
+from routers.comments import comments
+from routers.comments import post_comments
+from routers.comments import user_comments
 
 import exc
 
+from database.interfaces import DbInterface
+
 
 app = FastAPI(docs_url='/api/v1/docs/')
+DbInterface.create_tables()
 
 app.include_router(users.router, prefix='/api/v1')
 app.include_router(posts.router, prefix='/api/v1')
-app.include_router(users_posts.router, prefix='/api/v1')
+app.include_router(user_posts.router, prefix='/api/v1')
 app.include_router(comments.router, prefix='/api/v1')
+app.include_router(user_comments.router, prefix='/api/v1')
+app.include_router(post_comments.router, prefix='/api/v1')
 
 
 @app.exception_handler(exc.RequestedObjectNotFound)
