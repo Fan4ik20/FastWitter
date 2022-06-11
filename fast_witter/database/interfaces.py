@@ -23,10 +23,16 @@ class UserInterface:
         return db.get(models.User, id_)
 
     @staticmethod
-    def get_user_by_email(db: Session, email: str) -> models.User:
-        return db.scalars(
+    def get_user_by_username(db: Session, username: str) -> models.User | None:
+        return db.execute(
+            select(models.User).filter_by(username=username)
+        ).scalar_one_or_none()
+
+    @staticmethod
+    def get_user_by_email(db: Session, email: str) -> models.User | None:
+        return db.execute(
             select(models.User).filter_by(email=email)
-        ).first()
+        ).scalar_one_or_none()
 
     @staticmethod
     def create_user(db: Session, user: schemas.UserCreate) -> models.User:

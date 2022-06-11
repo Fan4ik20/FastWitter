@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import BaseModel, Field, PositiveInt, EmailStr
 
 
 class UserBase(BaseModel):
     username: str = Field(..., max_length=30)
-    email: str = Field(..., max_length=50)
+    email: str = EmailStr
     name: str | None = Field(None, max_length=20)
     surname: str | None = Field(None, max_length=30)
 
