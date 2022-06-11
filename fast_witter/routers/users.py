@@ -8,7 +8,7 @@ from dependencies import get_db, PaginationQueryParams
 from database.interfaces import UserInterface
 
 router = APIRouter(
-    prefix='/users', tags=['users']
+    prefix='/users', tags=['Users']
 )
 
 

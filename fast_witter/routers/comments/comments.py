@@ -7,7 +7,7 @@ import schemas
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import CommentInterface
 
-router = APIRouter(prefix='/comments', tags=['comments'])
+router = APIRouter(prefix='/comments', tags=['Comments'])
 
 
 @router.get('/', response_model=list[schemas.Comment])

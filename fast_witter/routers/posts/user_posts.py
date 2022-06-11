@@ -10,7 +10,7 @@ import exc
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import PostInterface, UserInterface
 
-router = APIRouter(prefix='/users/{user_id}/posts', tags=['users_posts'])
+router = APIRouter(prefix='/users/{user_id}/posts', tags=['Posts'])
 
 
 @router.get('/', response_model=list[schemas.Post])
@@ -61,7 +61,7 @@ def get_user_post(user_id: int, post_id: int, db: Session = Depends(get_db)):
     status_code=status.HTTP_204_NO_CONTENT
 )
 def delete_user_post(
-        user_id: int, post_id: int, db: Session = Depends(get_db())
+        user_id: int, post_id: int, db: Session = Depends(get_db)
 ):
     user = UserInterface.get_user(db, user_id)
     if user is None:

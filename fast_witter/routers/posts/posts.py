@@ -4,13 +4,12 @@ from sqlalchemy.orm import Session
 
 import exc
 import schemas
-import errors
 
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import PostInterface
 
 
-router = APIRouter(prefix='/posts', tags=['posts'])
+router = APIRouter(prefix='/posts', tags=['Posts'])
 
 
 @router.get('/', response_model=list[schemas.Post])
