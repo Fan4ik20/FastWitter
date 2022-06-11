@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status, Response
 
 from sqlalchemy.orm import Session
 
+import exc
 import schemas
 import errors
 
@@ -26,7 +27,8 @@ def get_posts(
 def get_post(post_id: int, db: Session = Depends(get_db)):
     post = PostInterface.get_post(db, post_id)
 
-    errors.raise_not_found_if_none(post, 'Post')
+    if post is None:
+        raise exc.RequestedObjectNotFound('Post')
 
     return post
 
@@ -38,6 +40,7 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
 def delete_post(post_id: int, db: Session = Depends(get_db)):
     post = PostInterface.get_post(db, post_id)
 
-    errors.raise_not_found_if_none(post, 'Post')
+    if post is None:
+        raise exc.RequestedObjectNotFound('Post')
 
     PostInterface.delete_post(db, post)

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm import Session
 
+import exc
 import schemas
-import errors
 
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import CommentInterface
@@ -24,7 +24,8 @@ def get_comments(
 def get_comment(comment_id: int, db: Session = Depends(get_db)):
     comment = CommentInterface.get_comment(db, comment_id)
 
-    errors.raise_not_found_if_none(comment, 'Comment')
+    if comment is None:
+        raise exc.RequestedObjectNotFound('Comment')
 
     return comment
 
@@ -36,6 +37,7 @@ def get_comment(comment_id: int, db: Session = Depends(get_db)):
 def delete_comment(comment_id: int, db: Session = Depends(get_db)):
     comment = CommentInterface.get_comment(db, comment_id)
 
-    errors.raise_not_found_if_none(comment, 'Comment')
+    if comment is None:
+        raise exc.RequestedObjectNotFound('Comment')
 
     CommentInterface.delete_comment(db, comment)

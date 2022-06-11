@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, status
+from fastapi import Response
 
 from sqlalchemy.orm import Session
 
-import errors
 import schemas
+
+import exc
+
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import PostInterface, UserInterface
 
@@ -15,6 +18,10 @@ def get_users_posts(
         user_id: int, pagination_params: PaginationQueryParams = Depends(),
         db: Session = Depends(get_db)
 ):
+    user = UserInterface.get_user(db, user_id)
+    if user is None:
+        raise exc.RequestedObjectNotFound('User')
+
     return PostInterface.get_users_posts(
         db, user_id, pagination_params.offset, pagination_params.limit
     )
@@ -26,7 +33,8 @@ def create_post(
 ):
     user = UserInterface.get_user(db, user_id)
 
-    errors.raise_not_found_if_none(user, 'User')
+    if user is None:
+        raise exc.RequestedObjectNotFound('User')
 
     return PostInterface.create_post(db, post, user_id)
 
@@ -36,11 +44,31 @@ def create_post(
     status_code=status.HTTP_201_CREATED
 )
 def get_user_post(user_id: int, post_id: int, db: Session = Depends(get_db)):
+    user = UserInterface.get_user(db, user_id)
+    if user is None:
+        raise exc.RequestedObjectNotFound('User')
+
     post = PostInterface.get_user_post(db, user_id, post_id)
 
-    errors.raise_not_found_if_none(
-        post, 'Post',
-        message='Post with given post_id and user_id does not exist'
-    )
+    if post is None:
+        raise exc.RequestedObjectNotFound('Post')
 
     return post
+
+
+@router.delete(
+    '/{post_id}/', response_class=Response,
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def delete_user_post(
+        user_id: int, post_id: int, db: Session = Depends(get_db())
+):
+    user = UserInterface.get_user(db, user_id)
+    if user is None:
+        raise exc.RequestedObjectNotFound('User')
+
+    post = PostInterface.get_post(db, post_id)
+    if post is None:
+        raise exc.RequestedObjectNotFound('Post')
+
+    PostInterface.delete_post(db, post)

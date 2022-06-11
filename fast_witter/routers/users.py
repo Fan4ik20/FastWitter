@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 import schemas
-import errors
+import exc
 
 from dependencies import get_db, PaginationQueryParams
 from database.interfaces import UserInterface
@@ -29,7 +29,7 @@ def get_users(
 )
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if UserInterface.get_user_by_email(db, user.email):
-        raise HTTPException(400, detail='Email already registered')
+        raise exc.ObjectWithGivenAttrAlreadyExist('User',  'Email')
 
     return UserInterface.create_user(db, user)
 
@@ -38,6 +38,7 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user = UserInterface.get_user(db, user_id)
 
-    errors.raise_not_found_if_none(user, 'User')
+    if user is None:
+        raise exc.RequestedObjectNotFound('User')
 
     return user

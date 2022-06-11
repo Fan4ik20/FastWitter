@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+import exc
 import schemas
-import errors
 
 from database.interfaces import CommentInterface
 from dependencies import get_db, PaginationQueryParams
@@ -28,6 +28,7 @@ def get_user_comment(
 
     comment = CommentInterface.get_user_comment(db, user_id, comment_id)
 
-    errors.raise_not_found_if_none(comment, 'Comment')
+    if comment is None:
+        raise exc.RequestedObjectNotFound('Comment')
 
     return comment
