@@ -1,10 +1,14 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
+
+from fastapi_jwt_auth.exceptions import AuthJWTException
+
 import uvicorn
 
 import config
 
 from routers import users
+from routers import auth
 
 from routers.posts import user_posts
 from routers.posts import posts
@@ -21,6 +25,7 @@ from database.interfaces.db_service import DbInterface
 app = FastAPI(docs_url='/api/v1/docs/')
 DbInterface.create_tables()
 
+app.include_router(auth.router, prefix='/api/v1')
 app.include_router(users.router, prefix='/api/v1')
 app.include_router(posts.router, prefix='/api/v1')
 app.include_router(user_posts.router, prefix='/api/v1')
@@ -52,6 +57,14 @@ def user_already_registered_handler(
             'message':
                 f'{exc_.model} with given {exc_.conflict_attr} already exist'
         }
+    )
+
+
+@app.exception_handler(AuthJWTException)
+def authjwt_exception_handler(request: Request, exc_: AuthJWTException):
+    return JSONResponse(
+        status_code=exc_.status_code,
+        content={'detail': exc_.message}
     )
 
 
