@@ -6,7 +6,7 @@ import exc
 import schemas
 
 from dependencies import get_db, PaginationQueryParams
-from database.interfaces import PostInterface
+from database.interfaces.post_interface import PostInterface
 
 
 router = APIRouter(prefix='/posts', tags=['Posts'])

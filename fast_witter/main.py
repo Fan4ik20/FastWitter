@@ -15,7 +15,7 @@ from routers.comments import user_comments
 
 import exc
 
-from database.interfaces import DbInterface
+from database.interfaces.db_service import DbInterface
 
 
 app = FastAPI(docs_url='/api/v1/docs/')

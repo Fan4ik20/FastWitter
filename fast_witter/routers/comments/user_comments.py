@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 import exc
 import schemas
 
-from database.interfaces import CommentInterface
+from database.interfaces.comment_interface import CommentInterface
 from dependencies import get_db, PaginationQueryParams
 
 

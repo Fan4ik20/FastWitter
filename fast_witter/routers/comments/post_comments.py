@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 import exc
 import schemas
 
-from database.interfaces import CommentInterface, UserInterface, PostInterface
+from database.interfaces.comment_interface import CommentInterface
+from database.interfaces.user_interface import UserInterface
+from database.interfaces.post_interface import PostInterface
+
 from dependencies import get_db, PaginationQueryParams
 
 router = APIRouter(

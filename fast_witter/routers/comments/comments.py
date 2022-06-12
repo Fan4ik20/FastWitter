@@ -5,7 +5,7 @@ import exc
 import schemas
 
 from dependencies import get_db, PaginationQueryParams
-from database.interfaces import CommentInterface
+from database.interfaces.comment_interface import CommentInterface
 
 router = APIRouter(prefix='/comments', tags=['Comments'])
 

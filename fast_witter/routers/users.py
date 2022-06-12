@@ -5,7 +5,7 @@ import schemas
 import exc
 
 from dependencies import get_db, PaginationQueryParams
-from database.interfaces import UserInterface
+from database.interfaces.user_interface import UserInterface
 
 router = APIRouter(
     prefix='/users', tags=['Users']
