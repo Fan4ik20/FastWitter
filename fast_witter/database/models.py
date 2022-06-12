@@ -21,8 +21,8 @@ class User(BlogBase):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(30), nullable=False)
-    email = Column(String(50), nullable=False)
+    username = Column(String(30), nullable=False, unique=True)
+    email = Column(String(50), nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
 
     name = Column(String(20))
@@ -45,6 +45,8 @@ class Post(BlogBase):
     content = Column(String, nullable=False)
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    likes_count = Column(Integer, nullable=False, default=0)
 
     user = relationship('User', backref='posts')
     likes = relationship('User', secondary=likes, backref='liked_posts')
