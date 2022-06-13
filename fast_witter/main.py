@@ -60,6 +60,14 @@ def user_already_registered_handler(
     )
 
 
+@app.exception_handler(exc.NotObjectOwner)
+def not_object_owner_handler(request: Request, exc_: exc.NotObjectOwner):
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content={'message': f'You are the not owner of this {exc_.model}'}
+    )
+
+
 @app.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc_: AuthJWTException):
     return JSONResponse(

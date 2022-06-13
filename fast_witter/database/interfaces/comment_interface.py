@@ -60,11 +60,11 @@ class CommentInterface:
 
     @staticmethod
     def create_comment(
-            db: Session, user_id: int, post_id: int,
+            db: Session, owner_id: int, post_id: int,
             comment: schemas.CommentCreate
     ) -> models.Comment:
         new_comment = models.Comment(
-            user_id=user_id, post_id=post_id, **comment.dict()
+            user_id=owner_id, post_id=post_id, **comment.dict()
         )
 
         db.add(new_comment)

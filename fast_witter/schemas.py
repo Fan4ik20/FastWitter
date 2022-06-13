@@ -24,17 +24,19 @@ class User(UserBase):
         orm_mode = True
 
 
-class PostModel(BaseModel):
+class PostBase(BaseModel):
     title: str = Field(..., max_length=30)
     content: str
 
 
-class PostCreate(PostModel):
+class PostCreate(PostBase):
     pass
 
 
-class Post(PostCreate):
+class Post(PostBase):
     id: PositiveInt
+
+    likes_count: int
 
     user_id: int = Field(..., ge=1)
 

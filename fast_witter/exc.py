@@ -12,6 +12,11 @@ class ObjectWithGivenAttrAlreadyExist(Exception):
         self.conflict_attr = conflict_attr
 
 
+class NotObjectOwner(Exception):
+    def __init__(self, model: str):
+        self.model = model
+
+
 CredentialsException = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
