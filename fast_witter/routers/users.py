@@ -1,13 +1,15 @@
 from fastapi import APIRouter, Depends, status
 
-from fastapi_jwt_auth import AuthJWT
-
 from sqlalchemy.orm import Session
+
+from database import models
 
 import schemas
 import exc
 
-from dependencies import get_db, PaginationQueryParams
+from dependencies import (
+    get_db, PaginationQueryParams, get_active_user
+)
 from database.interfaces.user_interface import UserInterface
 
 router = APIRouter(
@@ -39,17 +41,11 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return UserInterface.create_user(db, user)
 
 
-@router.get('/me/', response_model=schemas.User)
-def get_current_user(
-        authorize: AuthJWT = Depends(), db: Session = Depends(get_db)
-):
-    authorize.jwt_required()
-
-    current_username = authorize.get_jwt_subject()
-
-    user = UserInterface.get_user_by_username(db, current_username)
-
-    return user
+@router.get(
+    '/me/', response_model=schemas.User, response_model_exclude_none=True
+)
+def get_current_user(active_user: models.User = Depends(get_active_user)):
+    return active_user
 
 
 @router.get('/{user_id}/', response_model=schemas.User)

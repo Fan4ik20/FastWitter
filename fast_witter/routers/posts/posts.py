@@ -1,11 +1,12 @@
-from fastapi import APIRouter, Depends, status, Response
+from fastapi import APIRouter, Depends, status
 
 from sqlalchemy.orm import Session
 
 import exc
 import schemas
+from database import models
 
-from dependencies import get_db, PaginationQueryParams
+from dependencies import get_db, PaginationQueryParams, get_active_user
 from database.interfaces.post_interface import PostInterface
 
 
@@ -22,6 +23,18 @@ def get_posts(
     )
 
 
+@router.post(
+    '/', response_model=schemas.Post, status_code=status.HTTP_201_CREATED
+)
+def create_post(
+        post: schemas.PostCreate, db: Session = Depends(get_db),
+        active_user: models.User = Depends(get_active_user)
+):
+    post = PostInterface.create_post(db, post, active_user.id)
+
+    return post
+
+
 @router.get('/{post_id}/', response_model=schemas.Post)
 def get_post(post_id: int, db: Session = Depends(get_db)):
     post = PostInterface.get_post(db, post_id)
@@ -30,16 +43,3 @@ def get_post(post_id: int, db: Session = Depends(get_db)):
         raise exc.RequestedObjectNotFound('Post')
 
     return post
-
-
-@router.delete(
-    '/{post_id}/', status_code=status.HTTP_204_NO_CONTENT,
-    response_class=Response
-)
-def delete_post(post_id: int, db: Session = Depends(get_db)):
-    post = PostInterface.get_post(db, post_id)
-
-    if post is None:
-        raise exc.RequestedObjectNotFound('Post')
-
-    PostInterface.delete_post(db, post)

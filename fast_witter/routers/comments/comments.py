@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 import exc
@@ -28,16 +28,3 @@ def get_comment(comment_id: int, db: Session = Depends(get_db)):
         raise exc.RequestedObjectNotFound('Comment')
 
     return comment
-
-
-@router.delete(
-    '/{comment_id}/', response_class=Response,
-    status_code=status.HTTP_204_NO_CONTENT
-)
-def delete_comment(comment_id: int, db: Session = Depends(get_db)):
-    comment = CommentInterface.get_comment(db, comment_id)
-
-    if comment is None:
-        raise exc.RequestedObjectNotFound('Comment')
-
-    CommentInterface.delete_comment(db, comment)
