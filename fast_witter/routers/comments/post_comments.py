@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 
 import exc
-import schemas
-from database import models
 
+from schemas import comment_schemas as schemas
+
+from database import models
 from database.interfaces.comment_interface import CommentInterface
 from database.interfaces.user_interface import UserInterface
 from database.interfaces.post_interface import PostInterface

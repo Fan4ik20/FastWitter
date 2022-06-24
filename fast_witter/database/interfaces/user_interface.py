@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from database import models
-import schemas
+from schemas import user_schemas as schemas
 from security import service
 
 

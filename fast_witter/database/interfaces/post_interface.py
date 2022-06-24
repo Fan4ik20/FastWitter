@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from database import models
-import schemas
+from schemas import post_schemas as schemas
 
 
 class PostInterface:

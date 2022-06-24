@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm import Session
 
 import exc
-import schemas
-from database import models
 
+from schemas import comment_schemas as schemas
+
+from database import models
 from database.interfaces.comment_interface import CommentInterface
+
 from dependencies import get_db, PaginationQueryParams, get_active_user
 
 

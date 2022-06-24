@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from database import models
-import schemas
+from schemas import comment_schemas as schemas
 
 
 class CommentInterface:

@@ -4,13 +4,12 @@ from fastapi_jwt_auth import AuthJWT
 
 from sqlalchemy.orm import Session
 
-import schemas
-
 from security import service
 
 from database.interfaces.user_interface import UserInterface
 
 from dependencies import get_db
+from schemas import user_schemas
 
 import exc
 
@@ -20,7 +19,7 @@ router = APIRouter(tags=['Authentication'])
 
 @router.post('/login/')
 def login(
-        user: schemas.UserLogin,
+        user: user_schemas.UserLogin,
         authorize: AuthJWT = Depends(), db: Session = Depends(get_db)
 ):
     db_user = UserInterface.get_user_by_username(

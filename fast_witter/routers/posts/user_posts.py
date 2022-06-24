@@ -3,13 +3,13 @@ from fastapi import Response
 
 from sqlalchemy.orm import Session
 
-import schemas
+from schemas import post_schemas as schemas
 
 import exc
-from database import models
 
 from dependencies import get_db, PaginationQueryParams, get_active_user
 
+from database import models
 from database.interfaces.user_interface import UserInterface
 from database.interfaces.post_interface import PostInterface
 
