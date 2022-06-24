@@ -50,7 +50,7 @@ def get_post_comments(
 )
 def create_post_comment(
         user_id: int, post_id: int, comment: schemas.CommentCreate,
-        db: Session = Depends(),
+        db: Session = Depends(get_db),
         active_user: models.User = Depends(get_active_user)
 ):
     raise_exc_if_user_post_not_exist(user_id, post_id, db)
