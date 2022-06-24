@@ -48,7 +48,7 @@ class CommentBase(BaseModel):
     content: str = Field(..., max_length=100)
 
 
-class CommentCreate(BaseModel):
+class CommentCreate(CommentBase):
     pass
 
 
