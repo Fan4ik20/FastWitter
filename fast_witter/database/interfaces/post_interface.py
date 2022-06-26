@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from database import models
 from schemas import post_schemas as schemas
@@ -34,6 +34,16 @@ class PostInterface:
         ).scalar_one_or_none()
 
     @staticmethod
+    def get_user_post_with_related(
+            db: Session, user_id: int, post_id: int
+    ) -> models.Post | None:
+        return db.execute(
+            select(models.Post).filter_by(
+                id=post_id, user_id=user_id
+            ).options(joinedload(models.Post.user))
+        ).scalar_one_or_none()
+
+    @staticmethod
     def create_post(
             db: Session, post: schemas.PostCreate, user_id: int
     ) -> models.Post:
@@ -50,6 +60,14 @@ class PostInterface:
     @staticmethod
     def get_post(db: Session, post_id: int) -> models.Post | None:
         return db.get(models.Post, post_id)
+
+    @staticmethod
+    def get_post_with_related(db: Session, post_id: int) -> models.Post | None:
+        return db.scalar(
+            select(models.Post).filter_by(id=post_id).options(
+                joinedload(models.Post.user)
+            )
+        )
 
     @staticmethod
     def increase_likes_count(db: Session, post: models.Post) -> None:

@@ -23,7 +23,7 @@ def get_user_post_or_raise_exc(
     if user is None:
         raise exc.RequestedObjectNotFound('User')
 
-    post = PostInterface.get_user_post(db, user_id, post_id)
+    post = PostInterface.get_user_post_with_related(db, user_id, post_id)
 
     if post is None:
         raise exc.RequestedObjectNotFound('Post')
@@ -46,7 +46,7 @@ def get_users_posts(
 
 
 @router.get(
-    '/{post_id}/', response_model=schemas.Post,
+    '/{post_id}/', response_model=schemas.PostDetail,
     status_code=status.HTTP_201_CREATED
 )
 def get_user_post(user_id: int, post_id: int, db: Session = Depends(get_db)):

@@ -22,3 +22,11 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+
+class UserBuiltin(BaseModel):
+    id: PositiveInt
+    username: str = Field(..., max_length=30)
+
+    class Config:
+        orm_mode = True

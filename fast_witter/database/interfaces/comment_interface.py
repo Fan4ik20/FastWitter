@@ -1,5 +1,6 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload, selectinload
+from sqlalchemy.sql.selectable import Select
 
 from database import models
 from schemas import comment_schemas as schemas
@@ -27,36 +28,66 @@ class CommentInterface:
         ).all()
 
     @staticmethod
-    def get_user_post_comments(
-            db: Session, user_id: int, post_id: int,
+    def get_post_comments(
+            db: Session, post_id: int,
             offset: int = 0, limit: int = 100
     ) -> list[models.Comment]:
         return db.scalars(
             select(models.Post).filter_by(
-                user_id=user_id, post_id=post_id
+                post_id=post_id
             ).offset(offset).limit(limit)
         ).all()
 
     @staticmethod
-    def get_user_post_comment(
-            db: Session, user_id: int, post_id: int, comment_id: int
+    def _get_post_comment_stmt(post_id: int, comment_id: int) -> Select:
+        return select(models.Comment).filter_by(
+            id=comment_id, post_id=post_id
+        )
+
+    @classmethod
+    def get_post_comment_with_related(
+            cls, db: Session, post_id: int, comment_id: int
     ) -> models.Comment | None:
-        return db.execute(
-            select(models.Comment).filter_by(
-                id=comment_id, user_id=user_id, post_id=post_id
+        return db.scalar(
+            cls._get_post_comment_stmt(post_id, comment_id).options(
+                joinedload(models.Comment.post),
+                joinedload(models.Comment.user)
             )
-        ).scalar_one_or_none()
+        )
+
+    @classmethod
+    def get_post_comment(
+            cls, db: Session, post_id: int, comment_id: int
+    ) -> models.Comment | None:
+        return db.scalar(
+            cls._get_post_comment_stmt(post_id, comment_id)
+        )
 
     @staticmethod
+    def _get_user_comment_stmt(user_id: int, comment_id: int) -> Select:
+        return select(models.Comment).filter_by(
+            id=comment_id, user_id=user_id
+        )
+
+    @classmethod
     def get_user_comment(
-            db: Session, user_id: int, comment_id: int
+            cls, db: Session, user_id: int, comment_id: int
     ) -> models.Comment | None:
 
-        return db.execute(
-            select(models.Comment).filter_by(
-                id=comment_id, user_id=user_id
+        return db.scalar(
+            cls._get_user_comment_stmt(user_id, comment_id)
+        )
+
+    @classmethod
+    def get_user_comment_with_related(
+            cls, db: Session, user_id: int, comment_id: int
+    ) -> models.Comment | None:
+        return db.scalar(
+            cls._get_user_comment_stmt(user_id, comment_id).options(
+                joinedload(models.Comment.post),
+                joinedload(models.Comment.user)
             )
-        ).scalar_one_or_none()
+        )
 
     @staticmethod
     def create_comment(
@@ -75,8 +106,19 @@ class CommentInterface:
         return new_comment
 
     @staticmethod
-    def get_comment(db: Session, comment_id) -> models.Comment | None:
+    def get_comment(db: Session, comment_id: int) -> models.Comment | None:
         return db.get(models.Comment, comment_id)
+
+    @staticmethod
+    def get_comment_with_related(
+            db: Session, comment_id: int
+    ) -> models.Comment | None:
+        return db.scalar(
+            select(models.Comment).filter_by(id=comment_id).options(
+                joinedload(models.Comment.post),
+                joinedload(models.Comment.user)
+            )
+        )
 
     @staticmethod
     def delete_comment(db: Session, comment: models.Comment) -> None:

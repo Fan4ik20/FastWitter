@@ -37,9 +37,9 @@ def create_post(
     return post
 
 
-@router.get('/{post_id}/', response_model=schemas.Post)
+@router.get('/{post_id}/', response_model=schemas.PostDetail)
 def get_post(post_id: int, db: Session = Depends(get_db)):
-    post = PostInterface.get_post(db, post_id)
+    post = PostInterface.get_post_with_related(db, post_id)
 
     if post is None:
         raise exc.RequestedObjectNotFound('Post')
