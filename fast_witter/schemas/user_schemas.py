@@ -20,6 +20,9 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: PositiveInt
 
+    followers_count: int
+    following_count: int
+
     class Config:
         orm_mode = True
 
