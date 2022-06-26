@@ -11,11 +11,11 @@ from database.interfaces.comment_interface import CommentInterface
 from dependencies import get_db, PaginationQueryParams, get_active_user
 
 
-router = APIRouter(prefix='/users/{user_id}/comments', tags=['Comments'])
+router = APIRouter(prefix='/users/{user_id}/comments', tags=['User Comments'])
 
 
 @router.get('/', response_model=list[schemas.Comment])
-def get_users_comments(
+def get_user_comments(
         user_id: int, pagination_params: PaginationQueryParams = Depends(),
         db: Session = Depends(get_db)
 ):

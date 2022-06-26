@@ -14,7 +14,7 @@ from dependencies import get_db, PaginationQueryParams, get_active_user
 
 router = APIRouter(
     prefix='/users/{user_id}/posts/{post_id}/comments',
-    tags=['Comments']
+    tags=['Post Comments']
 )
 
 

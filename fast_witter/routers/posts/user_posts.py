@@ -13,7 +13,7 @@ from database import models
 from database.interfaces.user_interface import UserInterface
 from database.interfaces.post_interface import PostInterface
 
-router = APIRouter(prefix='/users/{user_id}/posts', tags=['Posts'])
+router = APIRouter(prefix='/users/{user_id}/posts', tags=['User Posts'])
 
 
 def get_user_post_or_raise_exc(
@@ -32,7 +32,7 @@ def get_user_post_or_raise_exc(
 
 
 @router.get('/', response_model=list[schemas.Post])
-def get_users_posts(
+def get_user_posts(
         user_id: int, pagination_params: PaginationQueryParams = Depends(),
         db: Session = Depends(get_db)
 ):
