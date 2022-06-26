@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.sql.selectable import Select
 
 from database import models
 from schemas import post_schemas as schemas
@@ -26,22 +27,26 @@ class PostInterface:
         ).all()
 
     @staticmethod
-    def get_user_post(
-            db: Session, user_id: int, post_id: int
-    ) -> models.Post | None:
-        return db.execute(
-            select(models.Post).filter_by(id=post_id, user_id=user_id)
-        ).scalar_one_or_none()
+    def _get_user_post_stmt(user_id: int, post_id: int) -> Select:
+        return select(models.Post).filter_by(id=post_id, user_id=user_id)
 
-    @staticmethod
-    def get_user_post_with_related(
-            db: Session, user_id: int, post_id: int
+    @classmethod
+    def get_user_post(
+            cls, db: Session, user_id: int, post_id: int
     ) -> models.Post | None:
-        return db.execute(
-            select(models.Post).filter_by(
-                id=post_id, user_id=user_id
-            ).options(joinedload(models.Post.user))
-        ).scalar_one_or_none()
+        return db.scalar(
+            cls._get_user_post_stmt(user_id, post_id)
+        )
+
+    @classmethod
+    def get_user_post_with_related(
+            cls, db: Session, user_id: int, post_id: int
+    ) -> models.Post | None:
+        return db.scalar(
+            cls._get_user_post_stmt(user_id, post_id).options(
+                joinedload(models.Post.user)
+            )
+        )
 
     @staticmethod
     def create_post(
@@ -79,19 +84,23 @@ class PostInterface:
         post.likes_count -= 1
         db.commit()
 
-    @staticmethod
-    def like_post(db: Session, post: models.Post, user: models.User) -> None:
+    @classmethod
+    def like_post(
+            cls, db: Session, post: models.Post, user: models.User
+    ) -> None:
         post.likes.append(user)
         db.commit()
 
-        PostInterface.increase_likes_count(db, post)
+        cls.increase_likes_count(db, post)
 
-    @staticmethod
-    def unlike_post(db: Session, post: models.Post, user: models.User) -> None:
+    @classmethod
+    def unlike_post(
+            cls, db: Session, post: models.Post, user: models.User
+    ) -> None:
         post.likes.remove(user)
         db.commit()
 
-        PostInterface.decrease_likes_count(db, post)
+        cls.decrease_likes_count(db, post)
 
     @staticmethod
     def delete_post(db: Session, post: models.Post) -> None:
