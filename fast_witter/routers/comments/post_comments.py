@@ -38,8 +38,8 @@ def get_post_comments(
 ):
     raise_exc_if_user_post_not_exist(user_id, post_id, db)
 
-    comments = CommentInterface.get_user_post_comments(
-        db, user_id, post_id, pagination_params.offset, pagination_params.limit
+    comments = CommentInterface.get_post_comments(
+        db, post_id, pagination_params.offset, pagination_params.limit
     )
 
     return comments
@@ -69,8 +69,8 @@ def get_ind_comment_or_raise_exc(
 ):
     raise_exc_if_user_post_not_exist(user_id, post_id, db)
 
-    comment = CommentInterface.get_user_post_comment(
-        db, user_id, post_id, comment_id
+    comment = CommentInterface.get_post_comment_with_related(
+        db, post_id, comment_id
     )
 
     if comment is None:
@@ -79,7 +79,7 @@ def get_ind_comment_or_raise_exc(
     return comment
 
 
-@router.get('/{comment_id}/', response_model=schemas.Comment)
+@router.get('/{comment_id}/', response_model=schemas.CommentDetail)
 def get_post_comment(
     user_id: int, post_id: int, comment_id: int, db: Session = Depends(get_db)
 ):

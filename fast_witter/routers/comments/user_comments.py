@@ -24,12 +24,14 @@ def get_users_comments(
     )
 
 
-@router.get('/{comment_id}/', response_model=schemas.Comment)
+@router.get('/{comment_id}/', response_model=schemas.CommentDetail)
 def get_user_comment(
         user_id: int, comment_id: int, db: Session = Depends(get_db)
 ):
 
-    comment = CommentInterface.get_user_comment(db, user_id, comment_id)
+    comment = CommentInterface.get_user_comment_with_related(
+        db, user_id, comment_id
+    )
 
     if comment is None:
         raise exc.RequestedObjectNotFound('Comment')
