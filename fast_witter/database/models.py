@@ -25,10 +25,13 @@ class User(BlogBase):
     email = Column(String(50), nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
 
+    followers_count = Column(Integer, nullable=False, default=0)
+    following_count = Column(Integer, nullable=False, default=0)
+
     name = Column(String(20))
     surname = Column(String(30))
 
-    followed = relationship(
+    following = relationship(
         'User', secondary=followers,
         primaryjoin=(followers.c.follower_id == id),
         secondaryjoin=(followers.c.followed_id == id),

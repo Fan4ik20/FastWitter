@@ -50,3 +50,44 @@ class UserInterface:
         db.refresh(db_user)
 
         return db_user
+
+    @staticmethod
+    def _increase_user_followers_count(db: Session, user: models.User) -> None:
+        user.followers_count += 1
+        db.commit()
+
+    @staticmethod
+    def _decrease_user_followers_count(db: Session, user: models.User) -> None:
+        user.followers_count -= 1
+        db.commit()
+
+    @staticmethod
+    def _increase_user_following_count(db: Session, user: models.User) -> None:
+        user.following_count += 1
+        db.commit()
+
+    @staticmethod
+    def _decrease_user_following_count(db: Session, user: models.User) -> None:
+        user.following_count -= 1
+        db.commit()
+
+    @classmethod
+    def follow_user(
+            cls, db: Session, followed: models.User, follower: models.User
+    ) -> None:
+
+        followed.followers.append(follower)
+        db.commit()
+
+        cls._increase_user_followers_count(db, followed)
+        cls._increase_user_following_count(db, follower)
+
+    @classmethod
+    def unfollow_user(
+            cls, db: Session, followed: models.User, follower: models.User
+    ) -> None:
+        followed.followers.remove(follower)
+        db.commit()
+
+        cls._decrease_user_followers_count(db, followed)
+        cls._decrease_user_following_count(db, follower)
