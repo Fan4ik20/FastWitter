@@ -84,6 +84,15 @@ class PostInterface:
         post.likes_count -= 1
         db.commit()
 
+    @staticmethod
+    def is_user_liked_post(db: Session, user_id: int, post_id: int) -> bool:
+        return db.query(
+            select(models.Post).filter(
+                models.Post.id == post_id,
+                models.Post.likes.any(models.User.id == user_id)
+            ).exists()
+        ).scalar()
+
     @classmethod
     def like_post(
             cls, db: Session, post: models.Post, user: models.User
