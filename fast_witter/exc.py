@@ -7,14 +7,19 @@ class RequestedObjectNotFound(Exception):
 
 
 class ObjectWithGivenAttrAlreadyExist(Exception):
-    def __init__(self, model: str, conflict_attr: str):
+    def __init__(self, model: str, conflict_attr: str) -> None:
         self.model = model
         self.conflict_attr = conflict_attr
 
 
 class NotObjectOwner(Exception):
-    def __init__(self, model: str):
+    def __init__(self, model: str) -> None:
         self.model = model
+
+
+class CantPerformThis(Exception):
+    def __init__(self, msg: str) -> None:
+        self.msg = msg
 
 
 CredentialsException = HTTPException(
