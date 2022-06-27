@@ -71,24 +71,30 @@ def delete_user_post(
     PostInterface.delete_post(db, post)
 
 
-@router.post('/{post_id}/like/', status_code=status.HTTP_201_CREATED)
+@router.post('/{post_id}/like/')
 def like_post(
         user_id: int, post_id: int, db: Session = Depends(get_db),
         active_user: models.User = Depends(get_active_user)
 ):
     post = get_user_post_or_raise_exc(user_id, post_id, db)
 
+    if PostInterface.is_user_liked_post(db, active_user.id, post_id):
+        raise exc.CantPerformThis('You can\'t like this post again')
+
     PostInterface.like_post(db, post, active_user)
 
     return {'status': 'OK'}
 
 
-@router.post('/{post_id}/unlike/', status_code=status.HTTP_201_CREATED)
+@router.post('/{post_id}/unlike/')
 def unlike_post(
         user_id: int, post_id: int, db: Session = Depends(get_db),
         active_user: models.User = Depends(get_active_user)
 ):
     post = get_user_post_or_raise_exc(user_id, post_id, db)
+
+    if not PostInterface.is_user_liked_post(db, active_user.id, post_id):
+        raise exc.CantPerformThis('You can\'t unlike post without liking it')
 
     PostInterface.unlike_post(db, post, active_user)
 
