@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  postgres:
+    image: 'postgres:14-alpine'
+    container_name: "blog_db"
+    hostname: "blog_db"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=blog
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./fast_witter
+    container_name: "blog_api"
+    volumes:
+      - ./fast_witter:/app
+    ports:
+      - '5555:5555'
+    env_file:
+      - fast_witter/.env
+    depends_on:
+      - postgres
