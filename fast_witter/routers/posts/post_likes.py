@@ -33,7 +33,7 @@ def get_user_post_or_raise_exc(
     return post
 
 
-@router.get('/likes/', response_model=user_schemas.User)
+@router.get('/likes/', response_model=list[user_schemas.User])
 def get_liked_post_users(
         user_id, post_id, db: Session = Depends(get_db),
         pagination_params: PaginationQueryParams = Depends()
