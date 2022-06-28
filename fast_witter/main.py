@@ -14,6 +14,7 @@ from routers.users import user_followers
 
 from routers.posts import user_posts
 from routers.posts import posts
+from routers.posts import post_likes
 
 from routers.comments import comments
 from routers.comments import post_comments
@@ -32,6 +33,7 @@ app.include_router(users.router, prefix='/api/v1')
 app.include_router(user_followers.router, prefix='/api/v1')
 app.include_router(posts.router, prefix='/api/v1')
 app.include_router(user_posts.router, prefix='/api/v1')
+app.include_router(post_likes.router, prefix='/api/v1')
 app.include_router(comments.router, prefix='/api/v1')
 app.include_router(user_comments.router, prefix='/api/v1')
 app.include_router(post_comments.router, prefix='/api/v1')
