@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session, joinedload, subqueryload
 from sqlalchemy.sql.selectable import Select
 
 from database import models
@@ -92,6 +92,18 @@ class PostInterface:
                 models.Post.likes.any(models.User.id == user_id)
             ).exists()
         ).scalar()
+
+    @staticmethod
+    def get_liked_post_users(
+            db: Session, post_id: int, offset: int = 0, limit: int = 100
+    ) -> list[models.User]:
+        return db.scalars(
+            select(models.User).filter(
+                models.User.liked_posts.any(models.Post.id == post_id)
+            ).options(
+                subqueryload(models.User.liked_posts)
+            ).offset(offset).limit(limit)
+        ).all()
 
     @classmethod
     def like_post(

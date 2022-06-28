@@ -1,4 +1,4 @@
-from sqlalchemy import select, exists
+from sqlalchemy import select
 from sqlalchemy.orm import Session, subqueryload
 from sqlalchemy.sql.selectable import Select
 
