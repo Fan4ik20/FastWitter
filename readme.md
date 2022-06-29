@@ -1,7 +1,7 @@
 # FastWitter
 ## Description
 An API for a social network in which you can share text posts,  
-follow other users and like their publication
+follow other users, like and comment their publication
 ## Requirements
 - python3.10
 ### Or
