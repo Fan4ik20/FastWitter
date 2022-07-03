@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from schemas import user_schemas as schemas
 
-import exc
+from exceptions import exc
 
 from database.interfaces.user_interface import UserInterface
 from database.models import User

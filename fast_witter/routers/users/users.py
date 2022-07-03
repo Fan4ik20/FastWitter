@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from database import models
 
 from schemas import user_schemas as schemas
-import exc
+from exceptions import exc
 
 from dependencies import (
     get_db, PaginationQueryParams, get_active_user
@@ -34,7 +34,7 @@ def get_users(
 )
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if UserInterface.get_user_by_email(db, user.email):
-        raise exc.ObjectWithGivenAttrAlreadyExist('User',  'Email')
+        raise exc.ObjectWithGivenAttrAlreadyExist('User', 'Email')
     if UserInterface.get_user_by_username(db, user.username):
         raise exc.ObjectWithGivenAttrAlreadyExist('User', 'Username')
 

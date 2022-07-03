@@ -11,8 +11,7 @@ from database.interfaces.user_interface import UserInterface
 from dependencies import get_db
 from schemas import user_schemas
 
-import exc
-
+from exceptions import exc
 
 router = APIRouter(tags=['Authentication'])
 

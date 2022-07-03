@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 
 from schemas import post_schemas as schemas
 
-import exc
+from exceptions import exc
 
 from dependencies import get_db, PaginationQueryParams, get_active_user
 

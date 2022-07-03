@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 
 from sqlalchemy.orm import Session
 
-import exc
+from exceptions import exc
 
 from schemas import post_schemas as schemas
 

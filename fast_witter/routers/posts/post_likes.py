@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 
 from sqlalchemy.orm import Session
 
-import exc
+from exceptions import exc
 
 from dependencies import get_db, PaginationQueryParams, get_active_user
 
