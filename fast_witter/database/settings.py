@@ -1,9 +1,13 @@
-import os
 from sqlalchemy import create_engine
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
 
-blog_engine = create_engine(
-    os.getenv('DB_URL')
-)
+from config import AppSettings
 
-BlogSession = sessionmaker(autoflush=False, bind=blog_engine)
+
+def create_db_engine(app_config: AppSettings) -> Engine:
+    return create_engine(app_config.DB_URL)
+
+
+def create_sessionmaker(engine: Engine) -> sessionmaker:
+    return sessionmaker(autoflush=False, bind=engine)

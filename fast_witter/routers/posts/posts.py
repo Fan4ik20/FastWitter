@@ -9,7 +9,7 @@ from schemas import post_schemas as schemas
 from database import models
 from database.interfaces.post_interface import PostInterface
 
-from dependencies import get_db, PaginationQueryParams, get_active_user
+from dependencies import BlogSession, PaginationQueryParams, get_active_user
 
 
 router = APIRouter(prefix='/posts', tags=['Posts'])
@@ -18,7 +18,7 @@ router = APIRouter(prefix='/posts', tags=['Posts'])
 @router.get('/', response_model=list[schemas.Post])
 def get_posts(
         pagination_params: PaginationQueryParams = Depends(),
-        db: Session = Depends(get_db)
+        db: Session = Depends(BlogSession)
 ):
     return PostInterface.get_all_posts(
         db, pagination_params.offset, pagination_params.limit
@@ -29,7 +29,7 @@ def get_posts(
     '/', response_model=schemas.Post, status_code=status.HTTP_201_CREATED
 )
 def create_post(
-        post: schemas.PostCreate, db: Session = Depends(get_db),
+        post: schemas.PostCreate, db: Session = Depends(BlogSession),
         active_user: models.User = Depends(get_active_user)
 ):
     post = PostInterface.create_post(db, post, active_user.id)
@@ -38,7 +38,7 @@ def create_post(
 
 
 @router.get('/{post_id}/', response_model=schemas.PostDetail)
-def get_post(post_id: int, db: Session = Depends(get_db)):
+def get_post(post_id: int, db: Session = Depends(BlogSession)):
     post = PostInterface.get_post_with_related(db, post_id)
 
     if post is None:

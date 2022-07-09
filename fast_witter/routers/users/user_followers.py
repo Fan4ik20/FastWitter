@@ -9,7 +9,7 @@ from exceptions import exc
 from database.interfaces.user_interface import UserInterface
 from database.models import User
 
-from dependencies import get_db, PaginationQueryParams, get_active_user
+from dependencies import BlogSession, PaginationQueryParams, get_active_user
 
 router = APIRouter(
     prefix='/users/{user_id}', tags=['User Followers|Following']
@@ -27,7 +27,7 @@ def get_user_or_raise_exc(user_id: int, db: Session) -> User:
 
 @router.get('/followers/', response_model=list[schemas.User])
 def get_user_followers(
-        user_id: int, db: Session = Depends(get_db),
+        user_id: int, db: Session = Depends(BlogSession),
         pagination_params: PaginationQueryParams = Depends()
 ):
     get_user_or_raise_exc(user_id, db)
@@ -41,7 +41,7 @@ def get_user_followers(
 
 @router.get('/following/', response_model=list[schemas.User])
 def get_user_following(
-        user_id: int, db: Session = Depends(get_db),
+        user_id: int, db: Session = Depends(BlogSession),
         pagination_params: PaginationQueryParams = Depends()
 ):
     get_user_or_raise_exc(user_id, db)
@@ -55,7 +55,7 @@ def get_user_following(
 
 @router.post('/follow/')
 def follow_user(
-        user_id: int, db: Session = Depends(get_db),
+        user_id: int, db: Session = Depends(BlogSession),
         active_user: User = Depends(get_active_user)
 ):
     followed = get_user_or_raise_exc(user_id, db)
@@ -73,7 +73,7 @@ def follow_user(
 
 @router.post('/unfollow/')
 def unfollow_user(
-        user_id: int, db: Session = Depends(get_db),
+        user_id: int, db: Session = Depends(BlogSession),
         active_user: User = Depends(get_active_user)
 ):
     followed = get_user_or_raise_exc(user_id, db)

@@ -3,17 +3,20 @@ from fastapi_jwt_auth.exceptions import AuthJWTException
 
 import uvicorn
 
-import config
+from config import AppSettings
 
 from exceptions import exc, handlers
 
+from database.settings import create_db_engine, create_sessionmaker
 from database.interfaces.db_service import DbInterface
+
+from dependencies import BlogSession, get_db_session
 
 from routers import blog_router
 
 
 def include_routers(fastapi_app: FastAPI) -> None:
-    fastapi_app.include_router(blog_router.router)
+    fastapi_app.include_router(blog_router.router, prefix='/api/v1')
 
 
 def include_handlers(fastapi_app: FastAPI) -> None:
@@ -35,9 +38,20 @@ def include_handlers(fastapi_app: FastAPI) -> None:
     )
 
 
+def include_db(app_: FastAPI, config: AppSettings):
+    blog_engine = create_db_engine(config)
+    blog_sessionmaker = create_sessionmaker(blog_engine)
+
+    DbInterface.create_tables(blog_engine)
+
+    app_.dependency_overrides[BlogSession] = get_db_session(blog_sessionmaker)
+
+
 def create_app() -> FastAPI:
     fastapi_app = FastAPI(docs_url='/api/v1/docs/')
-    DbInterface.create_tables()
+    app_config = AppSettings(_env_file='.env')
+
+    include_db(fastapi_app, app_config)
 
     include_routers(fastapi_app)
     include_handlers(fastapi_app)

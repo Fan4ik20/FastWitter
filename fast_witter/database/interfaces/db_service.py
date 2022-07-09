@@ -1,7 +1,7 @@
-from database import models, settings
+from database import models
 
 
 class DbInterface:
     @staticmethod
-    def create_tables() -> None:
-        models.BlogBase.metadata.create_all(bind=settings.blog_engine)
+    def create_tables(engine) -> None:
+        models.BlogBase.metadata.create_all(bind=engine)

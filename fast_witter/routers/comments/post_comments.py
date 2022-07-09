@@ -10,7 +10,7 @@ from database.interfaces.comment_interface import CommentInterface
 from database.interfaces.user_interface import UserInterface
 from database.interfaces.post_interface import PostInterface
 
-from dependencies import get_db, PaginationQueryParams, get_active_user
+from dependencies import BlogSession, PaginationQueryParams, get_active_user
 
 router = APIRouter(
     prefix='/users/{user_id}/posts/{post_id}/comments',
@@ -34,7 +34,7 @@ def raise_exc_if_user_post_not_exist(
 def get_post_comments(
         user_id: int, post_id: int,
         pagination_params: PaginationQueryParams = Depends(),
-        db: Session = Depends(get_db)
+        db: Session = Depends(BlogSession)
 ):
     raise_exc_if_user_post_not_exist(user_id, post_id, db)
 
@@ -51,7 +51,7 @@ def get_post_comments(
 )
 def create_post_comment(
         user_id: int, post_id: int, comment: schemas.CommentCreate,
-        db: Session = Depends(get_db),
+        db: Session = Depends(BlogSession),
         active_user: models.User = Depends(get_active_user)
 ):
     raise_exc_if_user_post_not_exist(user_id, post_id, db)
@@ -65,7 +65,7 @@ def create_post_comment(
 
 def get_ind_comment_or_raise_exc(
         user_id: int, post_id: int, comment_id: int,
-        db: Session = Depends(get_db)
+        db: Session = Depends(BlogSession)
 ):
     raise_exc_if_user_post_not_exist(user_id, post_id, db)
 
@@ -81,7 +81,8 @@ def get_ind_comment_or_raise_exc(
 
 @router.get('/{comment_id}/', response_model=schemas.CommentDetail)
 def get_post_comment(
-    user_id: int, post_id: int, comment_id: int, db: Session = Depends(get_db)
+        user_id: int, post_id: int, comment_id: int,
+        db: Session = Depends(BlogSession)
 ):
     comment = get_ind_comment_or_raise_exc(user_id, post_id, comment_id, db)
 
@@ -94,7 +95,7 @@ def get_post_comment(
 )
 def delete_post_comment(
         user_id: int, post_id: int, comment_id: int,
-        db: Session = Depends(get_db),
+        db: Session = Depends(BlogSession),
         active_user: models.User = Depends(get_active_user)
 ):
     comment = get_ind_comment_or_raise_exc(user_id, post_id, comment_id, db)

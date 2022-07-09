@@ -1,17 +1,23 @@
 from fastapi import Depends
-from database.settings import BlogSession
+
+from sqlalchemy.orm import sessionmaker, Session
+
 from database.interfaces.user_interface import UserInterface
 from database import models
 
 from fastapi_jwt_auth import AuthJWT
 
 
-def get_db() -> BlogSession:
-    db = BlogSession()
-    try:
-        yield db
-    finally:
-        db.close()
+class BlogSession:
+    pass
+
+
+def get_db_session(sessionmaker_: sessionmaker):
+    def get_db():
+        with sessionmaker_() as db:
+            yield db
+
+    return get_db
 
 
 class PaginationQueryParams:
@@ -27,7 +33,7 @@ def authentication_needed(authorize: AuthJWT = Depends(AuthJWT)):
 def get_active_user(
         logged_in=Depends(authentication_needed),
         authorize: AuthJWT = Depends(AuthJWT),
-        db: BlogSession = Depends(get_db)
+        db: Session = Depends(BlogSession)
 ) -> models.User:
     active_username = authorize.get_jwt_subject()
 

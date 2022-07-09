@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from exceptions import exc
 
-from dependencies import get_db, PaginationQueryParams, get_active_user
+from dependencies import BlogSession, PaginationQueryParams, get_active_user
 
 from database import models
 from database.interfaces.user_interface import UserInterface
@@ -35,7 +35,7 @@ def get_user_post_or_raise_exc(
 
 @router.get('/likes/', response_model=list[user_schemas.User])
 def get_liked_post_users(
-        user_id, post_id, db: Session = Depends(get_db),
+        user_id, post_id, db: Session = Depends(BlogSession),
         pagination_params: PaginationQueryParams = Depends()
 ):
     get_user_post_or_raise_exc(user_id, post_id, db)
@@ -49,7 +49,7 @@ def get_liked_post_users(
 
 @router.post('/like/')
 def like_post(
-        user_id: int, post_id: int, db: Session = Depends(get_db),
+        user_id: int, post_id: int, db: Session = Depends(BlogSession),
         active_user: models.User = Depends(get_active_user)
 ):
     post = get_user_post_or_raise_exc(user_id, post_id, db)
@@ -64,7 +64,7 @@ def like_post(
 
 @router.post('/unlike/')
 def unlike_post(
-        user_id: int, post_id: int, db: Session = Depends(get_db),
+        user_id: int, post_id: int, db: Session = Depends(BlogSession),
         active_user: models.User = Depends(get_active_user)
 ):
     post = get_user_post_or_raise_exc(user_id, post_id, db)

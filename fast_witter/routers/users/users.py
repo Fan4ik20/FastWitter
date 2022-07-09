@@ -8,7 +8,7 @@ from schemas import user_schemas as schemas
 from exceptions import exc
 
 from dependencies import (
-    get_db, PaginationQueryParams, get_active_user
+    PaginationQueryParams, get_active_user, BlogSession
 )
 from database.interfaces.user_interface import UserInterface
 
@@ -20,7 +20,7 @@ router = APIRouter(
 @router.get('/', response_model=list[schemas.User])
 def get_users(
         pagination_params: PaginationQueryParams = Depends(),
-        db: Session = Depends(get_db)
+        db: Session = Depends(BlogSession)
 ):
     """Retrieves a list of all users"""
 
@@ -32,7 +32,7 @@ def get_users(
 @router.post(
     '/', response_model=schemas.User, status_code=status.HTTP_201_CREATED
 )
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def create_user(user: schemas.UserCreate, db: Session = Depends(BlogSession)):
     if UserInterface.get_user_by_email(db, user.email):
         raise exc.ObjectWithGivenAttrAlreadyExist('User', 'Email')
     if UserInterface.get_user_by_username(db, user.username):
@@ -49,7 +49,7 @@ def get_current_user(active_user: models.User = Depends(get_active_user)):
 
 
 @router.get('/{user_id}/', response_model=schemas.User)
-def get_user(user_id: int, db: Session = Depends(get_db)):
+def get_user(user_id: int, db: Session = Depends(BlogSession)):
     user = UserInterface.get_user(db, user_id)
 
     if user is None:

@@ -7,7 +7,7 @@ from schemas import post_schemas as schemas
 
 from exceptions import exc
 
-from dependencies import get_db, PaginationQueryParams, get_active_user
+from dependencies import BlogSession, PaginationQueryParams, get_active_user
 
 from database import models
 from database.interfaces.user_interface import UserInterface
@@ -34,7 +34,7 @@ def get_user_post_or_raise_exc(
 @router.get('/', response_model=list[schemas.Post])
 def get_user_posts(
         user_id: int, pagination_params: PaginationQueryParams = Depends(),
-        db: Session = Depends(get_db)
+        db: Session = Depends(BlogSession)
 ):
     user = UserInterface.get_user(db, user_id)
     if user is None:
@@ -49,7 +49,7 @@ def get_user_posts(
     '/{post_id}/', response_model=schemas.PostDetail,
     status_code=status.HTTP_201_CREATED
 )
-def get_user_post(user_id: int, post_id: int, db: Session = Depends(get_db)):
+def get_user_post(user_id: int, post_id: int, db: Session = Depends(BlogSession)):
     post = get_user_post_or_raise_exc(user_id, post_id, db)
 
     return post
@@ -60,7 +60,7 @@ def get_user_post(user_id: int, post_id: int, db: Session = Depends(get_db)):
     status_code=status.HTTP_204_NO_CONTENT
 )
 def delete_user_post(
-        user_id: int, post_id: int, db: Session = Depends(get_db),
+        user_id: int, post_id: int, db: Session = Depends(BlogSession),
         active_user: models.User = Depends(get_active_user)
 ):
     if active_user.id != user_id:

@@ -8,7 +8,7 @@ from security import service
 
 from database.interfaces.user_interface import UserInterface
 
-from dependencies import get_db
+from dependencies import BlogSession
 from schemas import user_schemas
 
 from exceptions import exc
@@ -19,7 +19,7 @@ router = APIRouter(tags=['Authentication'])
 @router.post('/login/')
 def login(
         user: user_schemas.UserLogin,
-        authorize: AuthJWT = Depends(), db: Session = Depends(get_db)
+        authorize: AuthJWT = Depends(), db: Session = Depends(BlogSession)
 ):
     db_user = UserInterface.get_user_by_username(
         db, user.username

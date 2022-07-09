@@ -14,7 +14,7 @@ from routers.comments import post_comments
 from routers.comments import user_comments
 
 
-router = APIRouter(prefix='/api/v1')
+router = APIRouter()
 
 
 router.include_router(auth.router)
