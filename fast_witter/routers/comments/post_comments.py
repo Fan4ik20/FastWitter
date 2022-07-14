@@ -100,7 +100,7 @@ def delete_post_comment(
 ):
     comment = get_ind_comment_or_raise_exc(user_id, post_id, comment_id, db)
 
-    if active_user.id != comment.user_id or active_user.id != user_id:
+    if active_user.id != comment.user_id and active_user.id != user_id:
         raise exc.NotObjectOwner('Comment')
 
     CommentInterface.delete_comment(db, comment)
