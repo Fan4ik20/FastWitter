@@ -1,11 +1,9 @@
 from fastapi import status
-from fastapi_jwt_auth import AuthJWT
 
 import unittest
 
 from tests.base import TestBase
 from tests.factories import UserFactory
-from tests.service import TestSession
 
 from database import models
 from database.interfaces.user_interface import UserInterface
@@ -17,14 +15,8 @@ class TestUserRoutes(TestBase):
     def setUp(self) -> None:
         super().setUp()
 
-        self.db = TestSession()
         self.users = [UserFactory() for _ in range(10)]
-
-    def tearDown(self) -> None:
-        super().tearDown()
-
-        self.db.close()
-
+    
     @staticmethod
     def _serialize_user(user: models.User, exclude_none: bool = False) -> dict:
         user_schema: UserSchema = UserSchema.from_orm(user)
@@ -104,11 +96,6 @@ class TestUserRoutes(TestBase):
             response = self.client.get(f'/api/v1/users/{id_}/')
 
             self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-
-    @staticmethod
-    def _generate_token(username: str) -> str:
-        authorize = AuthJWT()
-        return authorize.create_access_token(subject=username)
 
     def test_get_current_user(self) -> None:
         user = self.users[0]

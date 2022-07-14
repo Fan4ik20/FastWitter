@@ -1,23 +1,33 @@
 import factory
 from factory.alchemy import SQLAlchemyModelFactory
 
-from sqlalchemy.orm import scoped_session
-
 from database import models
 
-from tests.service import TestSession
-
-factory_session = scoped_session(TestSession)
+from tests.service import test_session
 
 
-class UserFactory(SQLAlchemyModelFactory):
+class BaseSQLAlchemyFactory(SQLAlchemyModelFactory):
+    class Meta:
+        sqlalchemy_session = test_session
+        sqlalchemy_session_persistence = 'commit'
+
+
+class UserFactory(BaseSQLAlchemyFactory):
 
     class Meta:
         model = models.User
-        sqlalchemy_session = factory_session
         sqlalchemy_get_or_create = ('username', 'email')
-        sqlalchemy_session_persistence = 'commit'
 
     username = factory.Faker('user_name')
     email = factory.Faker('ascii_email')
     hashed_password = factory.Faker('password')
+
+
+class PostFactory(BaseSQLAlchemyFactory):
+    class Meta:
+        model = models.Post
+
+    title = factory.Faker('sentence', nb_words=3)
+    content = factory.Faker('sentence')
+
+    user = factory.SubFactory(UserFactory)
