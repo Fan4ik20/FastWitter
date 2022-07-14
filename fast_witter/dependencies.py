@@ -1,3 +1,5 @@
+from typing import Callable
+
 from fastapi import Depends
 
 from sqlalchemy.orm import sessionmaker, Session
@@ -9,10 +11,11 @@ from fastapi_jwt_auth import AuthJWT
 
 
 class BlogSession:
-    pass
+    def __init__(self):
+        raise NotImplementedError
 
 
-def get_db_session(sessionmaker_: sessionmaker):
+def get_db_session(sessionmaker_: sessionmaker) -> Callable:
     def get_db():
         with sessionmaker_() as db:
             yield db

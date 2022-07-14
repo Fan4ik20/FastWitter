@@ -6,7 +6,10 @@ from fastapi_jwt_auth import AuthJWT
 class AppSettings(BaseSettings):
     DB_URL: str
     SECRET_KEY: str
-    DB_URL_TEST: str | None = Field(None)
+
+
+class TestSettings(AppSettings):
+    DB_URL: str = Field('sqlite:///./test.db', env='DB_URL_TEST')
 
 
 class Settings(BaseModel):
