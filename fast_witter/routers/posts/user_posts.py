@@ -45,11 +45,10 @@ def get_user_posts(
     )
 
 
-@router.get(
-    '/{post_id}/', response_model=schemas.PostDetail,
-    status_code=status.HTTP_201_CREATED
-)
-def get_user_post(user_id: int, post_id: int, db: Session = Depends(BlogSession)):
+@router.get('/{post_id}/', response_model=schemas.PostDetail,)
+def get_user_post(
+        user_id: int, post_id: int, db: Session = Depends(BlogSession)
+):
     post = get_user_post_or_raise_exc(user_id, post_id, db)
 
     return post
