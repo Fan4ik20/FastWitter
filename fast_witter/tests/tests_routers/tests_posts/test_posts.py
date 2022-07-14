@@ -2,32 +2,18 @@ import unittest
 
 from fastapi import status
 
-from tests.base import TestBase
+from tests.base import PostTestBase
 from tests.factories import PostFactory, UserFactory
 
 from database import models
 from database.interfaces.post_interface import PostInterface
 
-from schemas.post_schemas import Post as PostSchema, PostDetail
 
-
-class TestPostsRoutes(TestBase):
+class TestPostsRoutes(PostTestBase):
     def setUp(self) -> None:
         super().setUp()
         
         self.posts = [PostFactory() for _ in range(10)]
-
-    @staticmethod
-    def _serialize_post(post: models.Post) -> dict:
-        post_schema = PostSchema.from_orm(post)
-
-        return post_schema.dict()
-
-    @staticmethod
-    def _serialize_detailed_post(post: models.Post) -> dict:
-        post_schema = PostDetail.from_orm(post)
-
-        return post_schema.dict(by_alias=True)
 
     def test_get_posts(self) -> None:
         limit = 7
