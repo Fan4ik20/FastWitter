@@ -22,7 +22,7 @@ class CommentInterface:
     ) -> list[models.Comment]:
 
         return db.scalars(
-            select(models.Post).filter_by(
+            select(models.Comment).filter_by(
                 user_id=user_id
             ).offset(offset).limit(limit)
         ).all()
@@ -33,7 +33,7 @@ class CommentInterface:
             offset: int = 0, limit: int = 100
     ) -> list[models.Comment]:
         return db.scalars(
-            select(models.Post).filter_by(
+            select(models.Comment).filter_by(
                 post_id=post_id
             ).offset(offset).limit(limit)
         ).all()
