@@ -26,6 +26,9 @@ coverage.xml
 .pytest_cache/
 cover/
 
+#SQLite
+test.db
+
 # Environments
 .env
 .venv
