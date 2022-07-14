@@ -31,3 +31,13 @@ class PostFactory(BaseSQLAlchemyFactory):
     content = factory.Faker('sentence')
 
     user = factory.SubFactory(UserFactory)
+
+
+class CommentFactory(BaseSQLAlchemyFactory):
+    class Meta:
+        model = models.Comment
+
+    content = factory.Faker('sentence')
+
+    user = factory.SubFactory(UserFactory)
+    post = factory.SubFactory(PostFactory)
