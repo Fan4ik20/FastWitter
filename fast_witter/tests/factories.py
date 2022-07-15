@@ -22,6 +22,18 @@ class UserFactory(BaseSQLAlchemyFactory):
     email = factory.Faker('ascii_email')
     hashed_password = factory.Faker('password')
 
+    @factory.post_generation
+    def following(self: models.User, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for followed in extracted:
+                self.following.append(followed)
+
+                self.following_count += 1
+                followed.followers_count += 1
+
 
 class PostFactory(BaseSQLAlchemyFactory):
     class Meta:
@@ -31,6 +43,15 @@ class PostFactory(BaseSQLAlchemyFactory):
     content = factory.Faker('sentence')
 
     user = factory.SubFactory(UserFactory)
+
+    @factory.post_generation
+    def likes(self, create, extracted, **kwargs):
+        if not create:
+            return
+
+        if extracted:
+            for like in extracted:
+                self.likes.append(like)
 
 
 class CommentFactory(BaseSQLAlchemyFactory):

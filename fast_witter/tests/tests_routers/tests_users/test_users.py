@@ -2,7 +2,7 @@ from fastapi import status
 
 import unittest
 
-from tests.base import TestBase
+from tests.base import UserTestBase
 from tests.factories import UserFactory
 
 from database import models
@@ -11,18 +11,12 @@ from database.interfaces.user_interface import UserInterface
 from schemas.user_schemas import User as UserSchema
 
 
-class TestUserRoutes(TestBase):
+class TestUserRoutes(UserTestBase):
     def setUp(self) -> None:
         super().setUp()
 
         self.users = [UserFactory() for _ in range(10)]
     
-    @staticmethod
-    def _serialize_user(user: models.User, exclude_none: bool = False) -> dict:
-        user_schema: UserSchema = UserSchema.from_orm(user)
-
-        return user_schema.dict(exclude_none=exclude_none)
-
     def test_get_users(self) -> None:
         response = self.client.get(
             '/api/v1/users/', params={'limit': 5}

@@ -14,6 +14,7 @@ from database import models
 
 from schemas.post_schemas import Post as PostSchema, PostDetail
 from schemas.comment_schemas import Comment as CommentSchema, CommentDetail
+from schemas.user_schemas import User as UserSchema
 
 
 app.dependency_overrides[BlogSession] = get_test_db
@@ -38,6 +39,14 @@ class TestBase(TestCase):
 
     def _get_auth_headers(self, username: str) -> dict[str, str]:
         return {'Authorization': f'Bearer {self._generate_token(username)}'}
+
+
+class UserTestBase(TestBase):
+    @staticmethod
+    def _serialize_user(user: models.User, exclude_none: bool = False) -> dict:
+        user_schema = UserSchema.from_orm(user)
+
+        return user_schema.dict(exclude_none=exclude_none)
 
 
 class PostTestBase(TestBase):
