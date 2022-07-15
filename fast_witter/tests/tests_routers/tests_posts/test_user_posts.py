@@ -17,7 +17,6 @@ class TestUserPostsRoutes(PostTestBase):
         serialized_posts = [
             self._serialize_post(post) for post in self.user_posts
         ]
-        print(serialized_posts)
 
         response = self.client.get(
             f'/api/v1/users/{self.user.id}/posts/'

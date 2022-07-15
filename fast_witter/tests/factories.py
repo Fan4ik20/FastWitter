@@ -39,7 +39,7 @@ class PostFactory(BaseSQLAlchemyFactory):
     class Meta:
         model = models.Post
 
-    title = factory.Faker('sentence', nb_words=3)
+    title = factory.Faker('sentence', nb_words=3, variable_nb_words=False)
     content = factory.Faker('sentence')
 
     user = factory.SubFactory(UserFactory)
