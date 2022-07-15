@@ -3,7 +3,7 @@
 An API for a social network in which you can share text posts,  
 follow other users, like and comment their publication
 ## Requirements
-- python3.10
+- Python 3.10
 ### Or
 - Docker
 ## Installation
@@ -30,6 +30,6 @@ follow other users, like and comment their publication
   - To stop the containers use
     - `docker compose stop`
   - To stop and remove containers use
-    - `docker compose down'
+    - `docker compose down`
 ## Links
 https://github.com/Fan4ik20/fastwitter
