@@ -45,13 +45,15 @@ class PostFactory(BaseSQLAlchemyFactory):
     user = factory.SubFactory(UserFactory)
 
     @factory.post_generation
-    def likes(self, create, extracted, **kwargs):
+    def likes(self: models.Post, create, extracted, **kwargs):
         if not create:
             return
 
         if extracted:
             for like in extracted:
                 self.likes.append(like)
+
+                self.likes_count += 1
 
 
 class CommentFactory(BaseSQLAlchemyFactory):
